@@ -1,0 +1,42 @@
+# Requirements:
+# - Enable 'write' permission for 'actions' and 'pull-requests'
+# permissions:
+#   actions: write
+#   pull-requests: write
+#
+# Additional setup: Copy dev/ci to the root of your repository. Refer to https://github.com/actions/labeler#create-githublabeleryml for more details.
+
+name: Pull Request Labeler
+on:
+  - pull_request_target
+
+jobs:
+  triage:
+    name: Add PR labels
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/labeler@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          sync-labels: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Add 'revert' label to relevant PRs
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const labeler = require('./dev/ci/labeler.js')
+            await labeler.addRevertLabel({ github, context })
+
+      - name: Add 'release' label to relevant PRs
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const labeler = require('./dev/ci/labeler.js')
+            await labeler.addReleaseLabel({
+              github, context,
+              workflow: 'release_pre_check.yml',
+            })

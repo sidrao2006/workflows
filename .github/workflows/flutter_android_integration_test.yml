@@ -1,0 +1,68 @@
+name: Android Integration Tests
+on:
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
+      environment:
+        required: false
+        type: string
+      test_filename:
+        required: true
+        type: string
+    secrets:
+      GCLOUD_PROJECT_ID:
+        required: true
+      GCLOUD_SERVICE_ACCOUNT_KEY:
+        required: true
+
+jobs:
+  android_integration_test:
+    name: Android Integration Test (Firebase Test Lab)
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+
+      - name: Run pre-build script
+        # flutter build generates files in android/ for building the app
+        run: flutter build apk
+
+      - name: Build android instrumentation test
+        working-directory: ${{ inputs.dir }}/android
+        run: |
+          ./gradlew app:assembleAndroidTest
+          ./gradlew app:assembleDebug -Ptarget=$GITHUB_WORKSPACE/${{ inputs.dir }}/integration_test/${{ inputs.test_filename }}
+
+      - name: Set up Google Cloud SDK for Firebase
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
+      - name: Upload APKs to Firebase Test Lab
+        run: |
+          gcloud firebase test android run \
+            --type instrumentation \
+            --app build/app/outputs/apk/debug/app-debug.apk \
+            --test build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk\
+            --timeout 2m

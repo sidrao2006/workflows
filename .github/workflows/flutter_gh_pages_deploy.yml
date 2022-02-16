@@ -1,0 +1,70 @@
+# Requirements:
+# - Add 'jobs.<job_id>.concurrency' to caller workflows with 'cancel-in-progress' set to true.
+# concurrency:
+#   group: Example Github Pages
+#   cancel-in-progress: true
+#
+# - Enable 'write' permission for 'contents'
+# permissions:
+#   contents: write
+
+name: Deploy to Github Pages
+on:
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
+      environment:
+        required: false
+        type: string
+      wait_on_tests:
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      args:
+        required: false
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy to Github Pages
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+
+      - name: Wait on tests
+        if: ${{ inputs.wait_on_tests }}
+        uses: lewagon/wait-on-check-action@master
+        with:
+          ref: ${{ github.ref }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          running-workflow-name: 'Build and Deploy Example to Github Pages'
+          allowed-conclusions: success,skipped,canceled,waiting
+
+      - name: Build app for web
+        run: |
+          flutter build web \
+            --base-href /${{ github.event.repository.name }}/ \
+            --no-source-maps \
+            --release ${{ secrets.args }}
+
+      - name: Deploy to Github Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: ${{ inputs.dir }}/build/web

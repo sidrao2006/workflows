@@ -1,0 +1,43 @@
+name: Web Integration Test
+on:
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
+      environment:
+        required: false
+        type: string
+    secrets:
+      args:
+        required: false
+
+jobs:
+  web_integration_test:
+    name: Web Integration Test
+    environment: ${{ inputs.environment }}
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+
+      - name: Run integration tests on Chrome
+        run: |
+          chromedriver --port=4444 &
+
+          flutter driver --driver test_driver/integration_test.dart `
+            --target ./integration_test/dynamic_cached_fonts_example_test.dart `
+            --device-id web-server `
+            --browser-name chrome `
+            --release ${{ secrets.args }}

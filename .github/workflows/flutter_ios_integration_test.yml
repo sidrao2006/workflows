@@ -1,0 +1,44 @@
+name: iOS Integration Test
+on:
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
+      environment:
+        required: false
+        type: string
+      test_filename:
+        required: true
+        type: string
+    secrets:
+      args:
+        required: false
+
+jobs:
+  ios_integration_test:
+    name: iOS Integration Test
+    environment: ${{ inputs.environment }}
+    runs-on: macos-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+
+      - name: Run tests on simulator
+        run: |
+          flutter emulators --launch apple_ios_simulator
+
+          flutter test \
+            --device-id iPhone \
+            ./integration_test/${{ inputs.test_filename }} ${{ secrets.args }}

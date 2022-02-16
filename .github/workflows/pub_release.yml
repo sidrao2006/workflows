@@ -1,0 +1,94 @@
+# Requirements:
+# - Add 'jobs.<job_id>.concurrency' to caller workflows with 'cancel-in-progress' set to true.
+# concurrency:
+#   group: Release to Pub
+#   cancel-in-progress: true
+#
+# - Enable 'write' permission for 'contents'
+# permissions:
+#   contents: write
+#
+# Additional setup: The changelog for Github Release is generated from the CHANGELOG.md file.
+# To add more details, refer to https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#configuring-automatically-generated-release-notes
+
+name: Release and publish package
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: false
+        type: string
+      wait_on_tests:
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      PUB_CREDENTIALS_ACCESS_TOKEN:
+        required: true
+      PUB_CREDENTIALS_REFRESH_TOKEN:
+        required: true
+      PUB_CREDENTIALS_ID_TOKEN:
+        required: true
+      PUB_CREDENTIALS_TOKEN_ENDPOINT:
+        required: true
+      PUB_CREDENTIALS_EXPIRATION:
+        required: true
+
+jobs:
+  release:
+    name: Release and Publish Package
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v8.1
+
+      - name: Check that necessary files have been modified
+        env:
+          changelog: CHANGELOG.md
+          version_file: pubspec.yaml
+          example_deps: example/pubspec.lock
+          IS_VALID: |
+            ${{
+              contains(steps.changed-files.outputs.modified_files, env.changelog) &&
+              contains(steps.changed-files.outputs.modified_files, env.version_file) &&
+              contains(steps.changed-files.outputs.modified_files, env.example_deps)
+            }}
+        run: |
+          if [[ "$IS_VALID" ]]
+          then
+            echo "All necessary files have been modified. Ready to release!"
+          else
+            echo "Please modify $changelog, $version_file and $example_deps to release package"
+          fi
+
+      - name: Wait on tests
+        if: ${{ inputs.wait_on_tests }}
+        uses: lewagon/wait-on-check-action@master
+        with:
+          ref: ${{ github.ref }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          running-workflow-name: 'Release and Publish Package'
+          allowed-conclusions: success,skipped
+
+      - name: Release package
+        if: success()
+        timeout-minutes: 30
+        uses: sidrao2006/release-pub-package@main
+        with:
+          pre-publish-command: flutter format .
+          access-token: ${{ secrets.PUB_CREDENTIALS_ACCESS_TOKEN }}
+          refresh-token: ${{ secrets.PUB_CREDENTIALS_REFRESH_TOKEN }}
+          id-token: ${{ secrets.PUB_CREDENTIALS_ID_TOKEN }}
+          token-endpoint: ${{ secrets.PUB_CREDENTIALS_TOKEN_ENDPOINT }}
+          expiration: ${{ secrets.PUB_CREDENTIALS_EXPIRATION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

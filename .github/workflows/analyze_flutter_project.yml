@@ -1,0 +1,24 @@
+name: Analyze Flutter Project
+
+on:
+  - workflow_call
+
+jobs:
+  analyze_project:
+    name: Analyze Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Analyze Project
+        run: flutter analyze --no-congratulate
