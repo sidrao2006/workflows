@@ -22,6 +22,7 @@ jobs:
     defaults:
       run:
         working-directory: ${{ inputs.dir }}
+        shell: pwsh
 
     steps:
       - name: Checkout repository code
@@ -34,10 +35,13 @@ jobs:
 
       - name: Run integration tests on Chrome
         run: |
-          chromedriver --port=4444 &
+          echo "ID=$((Start-Job {chromedriver --port=4444 --enable-chrome-logs}).Id)" >> $GITHUB_ENV
 
           flutter driver --driver test_driver/integration_test.dart `
             --target ./integration_test/dynamic_cached_fonts_example_test.dart `
             --device-id web-server `
             --browser-name chrome `
             --release ${{ secrets.args }}
+
+      - name: Print Chrome browser logs
+        run: Receive-Job -Id ${{ env.ID }}
