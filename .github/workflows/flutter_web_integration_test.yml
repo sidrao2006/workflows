@@ -9,6 +9,9 @@ on:
       environment:
         required: false
         type: string
+      test_filename:
+        required: true
+        type: string
     secrets:
       args:
         required: false
@@ -38,7 +41,7 @@ jobs:
           echo "ID=$((Start-Job {chromedriver --port=4444 --enable-chrome-logs}).Id)" >> $GITHUB_ENV
 
           flutter driver --driver test_driver/integration_test.dart `
-            --target ./integration_test/dynamic_cached_fonts_example_test.dart `
+            --target ./integration_test/${{ inputs.test_filename }} `
             --device-id web-server `
             --browser-name chrome `
             --release ${{ secrets.args }}
