@@ -5,7 +5,12 @@
 
 name: Pub pre-check
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   publish_to_pub_pre_check:
@@ -19,7 +24,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Run publisher in dry run mode
-        run: dart pub lish --dry-run | tee publish.log
+        run: dart pub lish --dry-run --directory ${{ inputs.dir }} | tee publish.log
 
       - name: Set output
         run: echo "::set-output name=logs::$(cat publish.log)"
