@@ -47,4 +47,4 @@ jobs:
             --release ${{ secrets.args }}
 
       - name: Print Chrome browser logs
-        run: Receive-Job -Id ${{ env.ID }}
+        run: Receive-Job -Id $env:ID
