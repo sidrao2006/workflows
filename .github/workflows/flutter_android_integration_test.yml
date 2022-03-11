@@ -1,5 +1,6 @@
 name: Android Integration Tests
 on:
+  pull_request:
   workflow_call:
     inputs:
       dir:

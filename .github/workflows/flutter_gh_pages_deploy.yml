@@ -10,6 +10,7 @@
 
 name: Deploy to Github Pages
 on:
+  pull_request:
   workflow_call:
     inputs:
       dir:

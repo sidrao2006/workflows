@@ -2,6 +2,7 @@ name: Analyze Flutter Project
 
 on:
   - workflow_call
+  - pull_request
 
 jobs:
   analyze_project:

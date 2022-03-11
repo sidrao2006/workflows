@@ -1,5 +1,6 @@
 name: Desktop Integration Test
 on:
+  pull_request:
   workflow_call:
     inputs:
       dir:
