@@ -38,7 +38,7 @@ jobs:
 
       - name: Run integration tests on Chrome
         run: |
-          echo "ID=$((Start-Job {chromedriver --port=4444 --enable-chrome-logs}).Id)" >> $env:GITHUB_ENV
+          $job = chromedriver --port=4444 --enable-chrome-logs &
 
           flutter driver --driver test_driver/integration_test.dart `
             --target ./integration_test/${{ inputs.test_filename }} `
@@ -46,5 +46,7 @@ jobs:
             --browser-name chrome `
             --release ${{ secrets.args }}
 
+          Receive-Job $job >> chrome_logs.log
+
       - name: Print Chrome browser logs
-        run: Receive-Job -Id $env:ID
+        run: Get-Content chrome_logs.log
