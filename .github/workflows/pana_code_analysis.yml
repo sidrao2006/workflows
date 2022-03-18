@@ -5,12 +5,21 @@
 
 name: Pana Code Analysis
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   pana_analyze:
     name: Analyze package with Pana
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
 
     steps:
       - name: Checkout repository code

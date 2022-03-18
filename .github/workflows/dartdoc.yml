@@ -1,6 +1,11 @@
 name: Documentation Analysis
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   dartdoc_analysis:
@@ -22,4 +27,4 @@ jobs:
         run: flutter pub global activate dartdoc
 
       - name: Run dartdoc
-        run: flutter pub global run dartdoc . --no-generate-docs -q
+        run: flutter pub global run dartdoc ${{ inputs.dir }} --no-generate-docs -q
