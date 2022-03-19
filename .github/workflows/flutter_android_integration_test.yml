@@ -1,3 +1,8 @@
+# Requirements:
+# - Enable 'write' permission for 'id-token'
+# permissions:
+#   id-token: write
+
 name: Android Integration Tests
 on:
   workflow_call:
