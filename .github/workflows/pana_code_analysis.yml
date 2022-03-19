@@ -11,6 +11,9 @@ on:
         required: false
         type: string
         default: '.'
+      min_points:
+        required: false
+        type: number
 
 jobs:
   pana_analyze:
@@ -38,11 +41,11 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Calculate Result
-        env:
-          PUB_SCORE_MIN_POINTS: 110
-          SCORE: ${{ steps.analysis.outputs.total }}
         run: |
-          if [[ $SCORE -lt $PUB_SCORE_MIN_POINTS ]]
+          [ "${{ inputs.min_points }}" -ne "0" ] \
+          && MIN_SCORE=${{ inputs.min_points }} \
+          || MIN_SCORE=${{ steps.analysis.outputs.total_max }}
+          if [[ ${{ steps.analysis.outputs.total }} -lt $MIN_SCORE ]]
           then
             echo "::error::Pub score test failed. Achieved score of $SCORE is less than expected minimum score of $PUB_SCORE_MIN_POINTS"
             exit 1
