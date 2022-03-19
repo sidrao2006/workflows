@@ -12,11 +12,12 @@ on:
       test_filename:
         required: true
         type: string
-    secrets:
-      GCLOUD_PROJECT_ID:
+      workload_identity_provider:
         required: true
-      GCLOUD_SERVICE_ACCOUNT_KEY:
+        type: string
+      service_account:
         required: true
+        type: string
 
 jobs:
   android_integration_test:
@@ -52,12 +53,15 @@ jobs:
           ./gradlew app:assembleAndroidTest
           ./gradlew app:assembleDebug -Ptarget=$GITHUB_WORKSPACE/${{ inputs.dir }}/integration_test/${{ inputs.test_filename }}
 
-      - name: Set up Google Cloud SDK for Firebase
-        uses: google-github-actions/setup-gcloud@master
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        id: 'auth'
         with:
-          project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
-          export_default_credentials: true
+          workload_identity_provider: ${{ inputs.workload_identity_provider }}
+          service_account: ${{ inputs.service_account }}
+
+      - name: Set up Google Cloud SDK for Firebase
+        uses: google-github-actions/setup-gcloud@v0
 
       - name: Upload APKs to Firebase Test Lab
         run: |
