@@ -11,6 +11,11 @@ jobs:
   dartdoc_analysis:
     name: Documentation Analysis
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v2
