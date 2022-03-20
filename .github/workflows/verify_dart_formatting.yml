@@ -1,7 +1,12 @@
 name: Verify Formatting
 
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   verify_formatting:
@@ -16,4 +21,4 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Verify formatting
-        run: dart format --line-length=100 --output=none --set-exit-if-changed .
+        run: dart format --line-length=100 --output=none --set-exit-if-changed ${{ inputs.dir }}

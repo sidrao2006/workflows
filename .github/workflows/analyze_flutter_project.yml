@@ -1,7 +1,12 @@
 name: Analyze Flutter Project
 
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        type: string
+        default: '.'
 
 jobs:
   analyze_project:
@@ -21,4 +26,4 @@ jobs:
         run: flutter pub get
 
       - name: Analyze Project
-        run: flutter analyze --no-congratulate
+        run: flutter analyze --no-congratulate ${{ inputs.dir }}

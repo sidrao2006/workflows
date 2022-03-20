@@ -1,0 +1,78 @@
+name: Workflow Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  analyze_flutter_project:
+    name: Analyze Flutter Project
+    uses: ./.github/workflows/analyze_flutter_project.yml
+    with:
+      dir: tests/flutter
+  dartdoc:
+    name: Documentation Analysis
+    uses: ./.github/workflows/dartdoc.yml
+    with:
+      dir: tests/flutter
+  flutter_android_integration_test:
+    name: Android Integration Tests
+    uses: ./.github/workflows/flutter_android_integration_test.yml
+    with:
+      dir: tests/flutter
+      test_filename: integration_test.dart
+      workload_identity_provider: projects/880330607132/locations/global/workloadIdentityPools/gh-actions/providers/gh-actions
+      service_account: gh-actions-test-lab@sidrao2006-workflows.iam.gserviceaccount.com
+    permissions:
+      id-token: write
+  flutter_desktop_integration_test:
+    name: Desktop Integration Test
+    uses: ./.github/workflows/flutter_desktop_integration_test.yml
+    with:
+      dir: tests/flutter
+      test_filename: integration_test.dart
+  flutter_gh_pages_deploy:
+    name: Deploy to Github Pages
+    uses: ./.github/workflows/flutter_gh_pages_deploy.yml
+    with:
+      dir: tests/flutter
+      wait_on_tests: false
+    permissions:
+      contents: write
+  flutter_ios_integration_test:
+    name: iOS Integration Test
+    uses: ./.github/workflows/flutter_ios_integration_test.yml
+    with:
+      dir: tests/flutter
+      test_filename: integration_test.dart
+  flutter_unit_test:
+    name: Unit Test
+    uses: ./.github/workflows/flutter_unit_test.yml
+    with:
+      dir: tests/flutter
+  flutter_web_integration_test:
+    name: Web Integration Test
+    uses: ./.github/workflows/flutter_web_integration_test.yml
+    with:
+      dir: tests/flutter
+      test_filename: integration_test.dart
+  pana_code_analysis:
+    name: Pana Code Analysis
+    uses: ./.github/workflows/pana_code_analysis.yml
+    with:
+      dir: tests/flutter
+    permissions:
+      checks: write
+  pub_pre_check:
+    name: Pub pre-check
+    uses: ./.github/workflows/pub_pre_check.yml
+    with:
+      dir: tests/flutter
+    permissions:
+      checks: write
+  verify_dart_formatting:
+    name: Verify Formatting
+    uses: ./.github/workflows/verify_dart_formatting.yml
+    with:
+      dir: tests/flutter
