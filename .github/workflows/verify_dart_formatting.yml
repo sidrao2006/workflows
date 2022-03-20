@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: '.'
+      line_length:
+        required: false
+        type: number
+        default: 100
 
 jobs:
   verify_formatting:
@@ -21,4 +25,4 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Verify formatting
-        run: dart format --line-length=100 --output=none --set-exit-if-changed ${{ inputs.dir }}
+        run: dart format --line-length=${{ inputs.line_length }} --output=none --set-exit-if-changed ${{ inputs.dir }}
