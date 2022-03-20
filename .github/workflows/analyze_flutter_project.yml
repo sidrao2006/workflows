@@ -13,6 +13,10 @@ jobs:
     name: Analyze Project
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v2
@@ -26,4 +30,4 @@ jobs:
         run: flutter pub get
 
       - name: Analyze Project
-        run: flutter analyze --no-congratulate ${{ inputs.dir }}
+        run: flutter analyze --no-congratulate
