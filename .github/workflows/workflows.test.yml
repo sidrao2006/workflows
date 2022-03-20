@@ -62,6 +62,7 @@ jobs:
     uses: ./.github/workflows/pana_code_analysis.yml
     with:
       dir: tests/flutter
+      min_points: 95
     permissions:
       checks: write
   pub_pre_check:
