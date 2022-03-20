@@ -47,7 +47,7 @@ jobs:
           || MIN_SCORE=${{ steps.analysis.outputs.total_max }}
           if [[ ${{ steps.analysis.outputs.total }} -lt $MIN_SCORE ]]
           then
-            echo "::error::Pub score test failed. Achieved score of $SCORE is less than expected minimum score of $PUB_SCORE_MIN_POINTS"
+            echo "::error::Pub score test failed. Achieved score of ${{ steps.analysis.outputs.total }} is less than expected minimum score of $MIN_SCORE"
             exit 1
           else
             echo "Pub score test passed!"
