@@ -11,7 +11,7 @@ A set of reusable workflows used across my repositories.
 | [Verify Formatting][verify_dart_formatting.yml] | Verifies that code has been formatted to my preferred line length of 100 |
 | [Pana Code Analysis][pana_code_analysis.yml] | Analyzes dart/flutter packages using [pana][pana] <br><br> <blockquote> ⚠️ Requires additional setup in workflow config! </blockquote> |
 | [Unit Test][flutter_unit_test.yml] | Runs flutter unit tests |
-| [Android Integration Tests][flutter_android_integration_test.yml] | Runs android integration (instrumentation) tests using a device on Firebase test Lab |
+| [Android Integration Tests][flutter_android_integration_test.yml] | Runs android integration (instrumentation) tests using a device on Firebase test Lab <br><br> <blockquote> ⚠️ Requires additional setup in workflow config! </blockquote> |
 | [iOS Integration Test][flutter_ios_integration_test.yml] | Runs iOS integration tests on an emulator (Uses a macos image) |
 | [Web Integration Test][flutter_web_integration_test.yml] | Runs web integration tests on headless chrome (Uses a windows image) |
 | [Desktop Integration Test][flutter_desktop_integration_test.yml] | Runs integration tests on Windows, MacOS and Linux (Ubuntu) |
