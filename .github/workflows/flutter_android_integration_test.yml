@@ -53,7 +53,7 @@ jobs:
           ./gradlew app:assembleDebug -Ptarget=$GITHUB_WORKSPACE/${{ inputs.dir }}/integration_test/${{ inputs.test_filename }}
 
       - name: Set up Google Cloud SDK for Firebase
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
           service_account_key: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
