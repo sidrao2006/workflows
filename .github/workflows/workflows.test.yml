@@ -22,6 +22,7 @@ jobs:
     with:
       dir: tests/flutter
       test_filename: integration_test.dart
+      environment: Test Lab Integration Test
       workload_identity_provider: projects/880330607132/locations/global/workloadIdentityPools/gh-actions/providers/gh-actions
       service_account: gh-actions-test-lab@sidrao2006-workflows.iam.gserviceaccount.com
     permissions:
