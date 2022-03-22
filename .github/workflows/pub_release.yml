@@ -42,13 +42,13 @@ jobs:
 
     steps:
       - name: Checkout repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v8.1
+        uses: tj-actions/changed-files@v18
 
       - name: Check that necessary files have been modified
         env:
@@ -71,7 +71,7 @@ jobs:
 
       - name: Wait on tests
         if: ${{ inputs.wait_on_tests }}
-        uses: lewagon/wait-on-check-action@master
+        uses: lewagon/wait-on-check-action@v1.1.1
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}

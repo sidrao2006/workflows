@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - name: Checkout repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Dart SDK
-        uses: dart-lang/setup-dart@v1
+        uses: dart-lang/setup-dart@v2
 
       - name: Format code for tests
         run: dart format .

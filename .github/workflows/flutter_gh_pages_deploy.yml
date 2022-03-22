@@ -43,16 +43,16 @@ jobs:
 
     steps:
       - name: Checkout repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
           channel: beta
 
       - name: Wait on tests
         if: ${{ inputs.wait_on_tests }}
-        uses: lewagon/wait-on-check-action@master
+        uses: lewagon/wait-on-check-action@v1.1.1
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
             --release ${{ secrets.args }}
 
       - name: Deploy to Github Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.5
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: ${{ inputs.dir }}/build/web
