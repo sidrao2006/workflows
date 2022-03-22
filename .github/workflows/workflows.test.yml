@@ -39,6 +39,7 @@ jobs:
     with:
       dir: tests/flutter
       wait_on_tests: false
+      dry_run: true
     permissions:
       contents: write
   flutter_ios_integration_test:
