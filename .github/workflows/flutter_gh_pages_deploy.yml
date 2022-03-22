@@ -23,6 +23,10 @@ on:
         required: false
         type: boolean
         default: true
+      dry_run:
+        required: false
+        type: boolean
+        default: false
     secrets:
       args:
         required: false
@@ -68,3 +72,4 @@ jobs:
         with:
           branch: gh-pages
           folder: ${{ inputs.dir }}/build/web
+          dry-run: ${{ inputs.dry_run }}
