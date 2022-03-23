@@ -1,0 +1,37 @@
+name: Update Floating Tag
+on:
+  release:
+    types:
+      - released
+
+jobs:
+  update_floating_tag:
+    name: Update Floating Tag
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update floating tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const sha = '${{ github.sha }}'
+            const major = '${{ github.event.release.release.tag_name }}'.split('.')[0]
+            const {repo, owner} = context.repo
+
+            // Try to update the ref first. If that fails, it probably does not
+            // exist yet, and we should create it.
+            try {
+              await github.rest.git.updateRef({
+                owner, repo, sha,
+                ref: `tags/${major}`,
+                force: true,
+              });
+              core.info(`Updated ${major} to ${sha}`);
+            } catch(err) {
+              core.warning(`Failed to create ${major}: ${err}`);
+              await github.rest.git.createRef({
+                owner, repo, sha,
+                ref: `refs/tags/${major}`,
+              });
+              core.info(`Created ${major} at ${sha}`);
+            }
