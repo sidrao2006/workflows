@@ -76,7 +76,7 @@ jobs:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-          running-workflow-name: ${{ github.workflow }}
+          running-workflow-name: 'Release and Publish Package / Release and Publish Package'
           allowed-conclusions: success,skipped
 
       - name: Release package

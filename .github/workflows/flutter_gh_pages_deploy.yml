@@ -57,7 +57,7 @@ jobs:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-          running-workflow-name: ${{ github.workflow }}
+          running-workflow-name: 'Build and Deploy Example to Github Pages / Build and Deploy to Github Pages'
           allowed-conclusions: success,skipped,cancelled,waiting
 
       - name: Build app for web
