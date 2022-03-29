@@ -15,7 +15,7 @@ jobs:
         with:
           script: |
             const sha = '${{ github.sha }}'
-            const major = '${{ github.event.release.release.tag_name }}'.split('.')[0]
+            const major = '${{ github.event.release.tag_name }}'.split('.')[0]
             const {repo, owner} = context.repo
 
             // Try to update the ref first. If that fails, it probably does not
