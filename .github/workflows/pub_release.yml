@@ -69,6 +69,15 @@ jobs:
             echo "Please modify $changelog, $version_file and $example_deps to release package"
           fi
 
+      - name: Get current workflow name
+        uses: octokit/request-action@v2.1.4
+        id: check_name
+        with:
+          route: GET /repos/{owner}/{repo}/check-runs/{check_run_id}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          check_run_id: ${{ github.run_id }}
+
       - name: Wait on tests
         if: ${{ inputs.wait_on_tests }}
         uses: lewagon/wait-on-check-action@v1.1.1
@@ -76,7 +85,7 @@ jobs:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-          running-workflow-name: 'Release and Publish Package / Release and Publish Package'
+          running-workflow-name: ${{ fromJson(steps.check_name.outputs.data).name }}
           allowed-conclusions: success,skipped
 
       - name: Release package
