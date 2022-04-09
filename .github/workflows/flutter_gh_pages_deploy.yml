@@ -50,6 +50,17 @@ jobs:
         with:
           channel: beta
 
+      - name: Get current workflow name
+        uses: octokit/request-action@v2.1.4
+        id: check_name
+        with:
+          route: GET /repos/{owner}/{repo}/actions/runs/{run_id}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          run_id: ${{ github.run_id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Wait on tests
         if: ${{ inputs.wait_on_tests }}
         uses: lewagon/wait-on-check-action@v1.1.1
@@ -57,7 +68,7 @@ jobs:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-          running-workflow-name: 'Build and Deploy Example to Github Pages / Build and Deploy to Github Pages'
+          running-workflow-name: '${{ github.workflow }} / Build and Deploy to Github Pages'
           allowed-conclusions: success,skipped,cancelled,waiting
 
       - name: Build app for web
