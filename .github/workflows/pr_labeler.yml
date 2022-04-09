@@ -8,7 +8,16 @@
 
 name: Pull Request Labeler
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      revert_label:
+        required: false
+        type: string
+        default: 'revert'
+      release_label:
+        required: false
+        type: string
+        default: 'release'
 
 jobs:
   triage:
@@ -25,18 +34,42 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Add 'revert' label to relevant PRs
+        if: contains(github.event.pull_request.title, 'Revert')
         uses: actions/github-script@v6
         with:
           script: |
-            const labeler = require('./dev/ci/labeler.js')
-            await labeler.addRevertLabel({ github, context })
+            const { owner, repo } = context.repo;
+            github.rest.issues.addLabels({
+              owner, repo,
+              issue_number: context.payload.pull_request.number,
+              labels: ['${{ inputs.revert_label }}'],
+            });
+
+      - name: Get commits
+        uses: octokit/request-action@v2.1.4
+        id: get_commits
+        with:
+          route: GET /repos/{owner}/{repo}/pulls/{pull_number}/commits
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.pull_request.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add 'release' label to relevant PRs
+        env:
+          title: ${{ github.event.pull_request.title }}
+          commit_messages: fromJSON(steps.get_commits.outputs.data).*.commit.message
         uses: actions/github-script@v6
         with:
           script: |
-            const labeler = require('./dev/ci/labeler.js')
-            await labeler.addReleaseLabel({
-              github, context,
-              workflow: 'release_pre_check.yml',
-            })
+            const { title, commit_messages } = process.env
+            if (title.includes('Release')
+            || JSON.parse(commit_messages).some(message =>/^release.*:.*/.test(message)) ) {
+              const { owner, repo } = context.repo;
+              github.rest.issues.addLabels({
+                owner, repo,
+                issue_number: context.payload.pull_request.number,
+                labels: ['${{ inputs.release_label }}'],
+              });
+            }

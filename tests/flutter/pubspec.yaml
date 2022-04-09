@@ -1,6 +1,6 @@
 name: test_app
 description: A new Flutter project.
-publish_to: 'none'
+repository: https://github.com/sidrao2006/workflows
 version: 1.0.0+1
 
 environment:

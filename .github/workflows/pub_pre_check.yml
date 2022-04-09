@@ -24,42 +24,37 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Run publisher in dry run mode
+        id: publisher
+        continue-on-error: true
         run: |
           dart pub lish --dry-run --directory ${{ inputs.dir }} | tee publish.log
-          [[ "$?" == "65" ]] && exit 1
+          CODE=$?
+          echo "LOGS<<EOF" >> $GITHUB_ENV
+          cat publish.log >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          [[ "$CODE" == "65" ]] && exit 1
 
-      - name: Set output
-        run: echo "::set-output name=logs::$(cat publish.log)"
-
-  post_result:
-    name: Post pre-check result
-    runs-on: ubuntu-latest
-
-    needs: [ publish_to_pub_pre_check ]
-
-    steps:
       - name: Post pre-check result to check run
         uses: actions/github-script@v6
-        env:
-          STATUS: ${{ needs.publish_to_pub_pre_check.result == 'success' }}
-          LOGS: ${{ needs.publish_to_pub_pre_check.outputs.logs }}
         with:
           script: |
-            const { STATUS, LOGS } = process.env;
+            const { LOGS } = process.env
             const { owner, repo } = context.repo;
 
-            await github.rest.checks.create({
+            const { data } = await github.rest.checks.create({
               owner, repo,
               name: 'Release Pre-Check',
               head_sha: context.sha,
               status: 'completed',
-              conclusion: STATUS ? 'success' : 'failure',
+              conclusion: '${{ steps.publisher.outcome }}',
               output: {
                 title: 'Logs for Pre-Check: Publish to Pub',
                 text: LOGS,
-                summary: STATUS
+                summary: '${{ steps.publisher.outcome }}' === 'success'
                   ? 'Publish to Pub dry run successful! :tada:'
-                  : 'Publish to Pub failed :frowning_face: Output logs -',
+                  : 'Publish to Pub failed :frowning_face:',
               },
                 completed_at: new Date().toISOString(),
             })
+
+            console.log(`Output: ${data.html_url}`)
