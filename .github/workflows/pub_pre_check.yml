@@ -26,11 +26,9 @@ jobs:
       - name: Run publisher in dry run mode
         id: publisher
         continue-on-error: true
-        run: dart pub lish --dry-run --directory ${{ inputs.dir }} | tee publish.log
-
-      - name: Set output
-        id: out_logs
-        run: echo "::set-output name=logs::$(cat publish.log)"
+        run: |
+          dart pub lish --dry-run --directory ${{ inputs.dir }} | tee publish.log
+          echo "::set-output name=logs::$(cat publish.log)"
 
       - name: Post pre-check result to check run
         uses: actions/github-script@v6
@@ -38,7 +36,7 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
 
-            await github.rest.checks.create({
+            const { data } = await github.rest.checks.create({
               owner, repo,
               name: 'Release Pre-Check',
               head_sha: context.sha,
@@ -46,10 +44,12 @@ jobs:
               conclusion: '${{ steps.publisher.outcome }}',
               output: {
                 title: 'Logs for Pre-Check: Publish to Pub',
-                text: '${{ steps.out_logs.outputs.logs }}',
+                text: '${{ steps.publisher.outputs.logs }}',
                 summary: '${{ steps.publisher.outcome }}' === 'success'
                   ? 'Publish to Pub dry run successful! :tada:'
                   : 'Publish to Pub failed :frowning_face:',
               },
                 completed_at: new Date().toISOString(),
             })
+            
+            console.log(`Output: ${data.html_url}`)
