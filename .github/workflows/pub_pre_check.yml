@@ -32,7 +32,7 @@ jobs:
           echo "LOGS<<EOF" >> $GITHUB_ENV
           cat publish.log >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          [[ "$CODE" == "65" ]] && exit 1
+          if [[ "$CODE" == "65" ]]; then exit 1; fi
 
       - name: Post pre-check result to check run
         uses: actions/github-script@v6
