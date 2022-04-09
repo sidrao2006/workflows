@@ -28,12 +28,16 @@ jobs:
         continue-on-error: true
         run: |
           dart pub lish --dry-run --directory ${{ inputs.dir }} | tee publish.log
-          echo "::set-output name=logs::$(cat publish.log)"
+          LOGS=$(cat publish.log)
+          echo "LOGS<<EOF" >> $GITHUB_ENV
+          echo "$LOGS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Post pre-check result to check run
         uses: actions/github-script@v6
         with:
           script: |
+            const { LOGS } = process.env
             const { owner, repo } = context.repo;
 
             const { data } = await github.rest.checks.create({
@@ -44,7 +48,7 @@ jobs:
               conclusion: '${{ steps.publisher.outcome }}',
               output: {
                 title: 'Logs for Pre-Check: Publish to Pub',
-                text: '${{ steps.publisher.outputs.logs }}',
+                text: LOGS,
                 summary: '${{ steps.publisher.outcome }}' === 'success'
                   ? 'Publish to Pub dry run successful! :tada:'
                   : 'Publish to Pub failed :frowning_face:',
