@@ -28,9 +28,11 @@ jobs:
         continue-on-error: true
         run: |
           dart pub lish --dry-run --directory ${{ inputs.dir }} | tee publish.log
+          CODE=$?
           echo "LOGS<<EOF" >> $GITHUB_ENV
           cat publish.log >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+          if [[ "$CODE" == "65" ]]; then exit 1; fi
 
       - name: Post pre-check result to check run
         uses: actions/github-script@v6
