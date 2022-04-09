@@ -28,9 +28,8 @@ jobs:
         continue-on-error: true
         run: |
           dart pub lish --dry-run --directory ${{ inputs.dir }} | tee publish.log
-          LOGS=$(cat publish.log)
           echo "LOGS<<EOF" >> $GITHUB_ENV
-          echo "$LOGS" >> $GITHUB_ENV
+          echo "$(cat publish.log)" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       - name: Post pre-check result to check run
