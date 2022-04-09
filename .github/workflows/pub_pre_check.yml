@@ -15,6 +15,7 @@ on:
 jobs:
   publish_to_pub_pre_check:
     name: Publish to Pub pre-check
+    if: contains(github.event.pull_request.labels.*.name, 'release :tada:')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository code
