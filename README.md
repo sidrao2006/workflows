@@ -16,7 +16,7 @@ A set of reusable workflows used across my repositories.
 | [Web Integration Test][flutter_web_integration_test.yml] | Runs web integration tests on headless chrome (Uses a windows image) |
 | [Desktop Integration Test][flutter_desktop_integration_test.yml] | Runs integration tests on Windows, MacOS and Linux (Ubuntu) |
 | [Deploy to Github Pages][flutter_gh_pages_deploy.yml] | Builds a flutter web app and deploys it to Github Pages <br><br> <blockquote> ⚠️ Requires additional setup in workflow config! </blockquote> |
-| [Pull Request Labeler][pr_labeler.yml] | Adds appropriate labels to PRs using the provided config. <br><br> <blockquote> ⚠️ Requires additional setup! </blockquote> |
+| [Pull Request Labeler][pr_labeler.yml] | Adds appropriate labels to PRs using the provided config. |
 | [Pub pre-check][pub_pre_check.yml] | Tries to publish dart/flutter package in dry run mode and reports any failures. <br><br> <blockquote> ⚠️ Requires additional setup in workflow config! </blockquote> |
 | [Release and publish package][pub_release.yml] | Ensures that required files (changelog, pubspec files) have been modified and then publishes the package to pub.dev and as a Github Release <br><br> <blockquote> ⚠️ Requires additional setup! </blockquote> |
 
