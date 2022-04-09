@@ -59,7 +59,7 @@ jobs:
       - name: Add 'release' label to relevant PRs
         env:
           title: ${{ github.event.pull_request.title }}
-          commit_messages: ${{ fromJSON(steps.get_commits.outputs.data).*.commit.message }}
+          commit_messages: ${{ toJSON(fromJSON(steps.get_commits.outputs.data).*.commit.message) }}
         uses: actions/github-script@v6
         with:
           script: |
