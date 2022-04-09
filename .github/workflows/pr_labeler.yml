@@ -8,7 +8,16 @@
 
 name: Pull Request Labeler
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      revert_label:
+        required: false
+        type: string
+        default: 'revert'
+      release_label:
+        required: false
+        type: string
+        default: 'release'
 
 jobs:
   triage:
@@ -33,7 +42,7 @@ jobs:
             github.rest.issues.addLabels({
               owner, repo,
               issue_number: context.payload.pull_request.number,
-              labels: ['revert :rewind:'],
+              labels: ['${{ inputs.revert_label }}'],
             });
 
       - name: Get commits
@@ -61,6 +70,6 @@ jobs:
               github.rest.issues.addLabels({
                 owner, repo,
                 issue_number: context.payload.pull_request.number,
-                labels: ['release :tada:'],
+                labels: ['${{ inputs.release_label }}'],
               });
             }
