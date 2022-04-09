@@ -36,7 +36,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { STATUS } = process.env;
             const { owner, repo } = context.repo;
 
             await github.rest.checks.create({
@@ -50,7 +49,7 @@ jobs:
                 text: '${{ steps.out_logs.outputs.logs }}',
                 summary: '${{ steps.publisher.outcome }}' === 'success'
                   ? 'Publish to Pub dry run successful! :tada:'
-                  : 'Publish to Pub failed :frowning_face: Output logs -',
+                  : 'Publish to Pub failed :frowning_face:',
               },
                 completed_at: new Date().toISOString(),
             })
