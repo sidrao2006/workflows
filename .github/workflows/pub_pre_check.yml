@@ -34,12 +34,9 @@ jobs:
 
       - name: Post pre-check result to check run
         uses: actions/github-script@v6
-        env:
-          STATUS: ${{ steps.publisher.outcome }}
-          LOGS: ${{ steps.out_logs.outputs.logs }}
         with:
           script: |
-            const { STATUS, LOGS } = process.env;
+            const { STATUS } = process.env;
             const { owner, repo } = context.repo;
 
             await github.rest.checks.create({
@@ -47,11 +44,11 @@ jobs:
               name: 'Release Pre-Check',
               head_sha: context.sha,
               status: 'completed',
-              conclusion: STATUS,
+              conclusion: '${{ steps.publisher.outcome }}',
               output: {
                 title: 'Logs for Pre-Check: Publish to Pub',
-                text: LOGS,
-                summary: STATUS === 'success'
+                text: '${{ steps.out_logs.outputs.logs }}',
+                summary: '${{ steps.publisher.outcome }}' === 'success'
                   ? 'Publish to Pub dry run successful! :tada:'
                   : 'Publish to Pub failed :frowning_face: Output logs -',
               },
