@@ -30,13 +30,13 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v3
 
+      - name: Install Rosetta
+        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: beta
-
-      - name: Install Rosetta
-        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
 
       - name: Run tests on simulator
         run: |

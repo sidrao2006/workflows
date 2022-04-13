@@ -48,6 +48,10 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v3
 
+      - name: Install Rosetta
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
@@ -66,10 +70,6 @@ jobs:
           liblzma-dev `
           ninja-build `
           xvfb
-
-      - name: Install Rosetta
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
 
       - name: Run Integration Tests
         env:
