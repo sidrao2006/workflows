@@ -35,6 +35,9 @@ jobs:
         with:
           channel: beta
 
+      - name: Install Rosetta
+        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+
       - name: Run tests on simulator
         run: |
           flutter emulators --launch apple_ios_simulator

@@ -67,6 +67,10 @@ jobs:
           ninja-build `
           xvfb
 
+      - name: Install Rosetta
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+
       - name: Run Integration Tests
         env:
           OS: ${{ matrix.os }}
