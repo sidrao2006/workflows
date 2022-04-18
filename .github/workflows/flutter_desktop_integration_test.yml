@@ -51,7 +51,7 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          channel: beta
+          channel: ${{ matrix.flutter_os == 'macos' && 'stable' || 'beta' }} # Temporarily use stable channel for macOS
 
       - name: Configure Flutter platforms
         run: flutter config --enable-${{ matrix.flutter_os }}-desktop
