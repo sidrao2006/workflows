@@ -76,7 +76,7 @@ jobs:
       - name: Run Integration Tests
         env:
           OS: ${{ matrix.os }}
-          COVERAGE: ${{ inputs.coverage && matrix.flutter_os == 'linux' && '--coverage' }} # Coverage data is required from any one platform only.
+          COVERAGE: ${{ inputs.coverage && matrix.flutter_os == 'linux' && '--coverage' || '' }} # Coverage data is required from any one platform only.
         run: |
          if ( "$env:OS" -eq "ubuntu-latest" ) { Xvfb -ac :99 &; $env:DISPLAY=":99" }
 
