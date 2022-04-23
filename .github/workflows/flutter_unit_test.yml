@@ -6,6 +6,13 @@ on:
         required: false
         type: string
         default: '.'
+      coverage:
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      codecov_token:
+        required: false
 
 jobs:
   unit_test:
@@ -26,4 +33,13 @@ jobs:
           channel: beta
 
       - name: Run unit tests
-        run: flutter test
+        run: flutter test --coverage
+
+      - name: Codecov Test Coverage
+        if: ${{ inputs.coverage }}
+        uses: codecov/codecov-action@v3.1.0
+        with:
+          token: ${{ secrets.codecov_token }}
+          file: ${{ inputs.dir }}/coverage/lcov.info
+          flags: unit
+          fail_ci_if_error: true
