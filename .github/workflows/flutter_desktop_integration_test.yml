@@ -12,8 +12,14 @@ on:
       test_filename:
         required: true
         type: string
+      coverage:
+        required: false
+        type: boolean
+        default: true
     secrets:
       args:
+        required: false
+      codecov_token:
         required: false
 
 jobs:
@@ -70,9 +76,20 @@ jobs:
       - name: Run Integration Tests
         env:
           OS: ${{ matrix.os }}
+          COVERAGE: ${{ inputs.coverage && matrix.flutter_os == 'linux' && '--coverage' }} # Coverage data is required from any one platform only.
         run: |
          if ( "$env:OS" -eq "ubuntu-latest" ) { Xvfb -ac :99 &; $env:DISPLAY=":99" }
 
          flutter test `
            --device-id ${{ matrix.flutter_os }} `
+           "$env:COVERAGE" `
            ./integration_test/${{ inputs.test_filename }} ${{ secrets.args }}
+
+      - name: Codecov Test Coverage
+        if: ${{ inputs.coverage && matrix.flutter_os == 'linux' }}
+        uses: codecov/codecov-action@v3.1.0
+        with:
+          token: ${{ secrets.codecov_token }}
+          file: ${{ inputs.dir }}/coverage/lcov.info
+          flags: integration
+          fail_ci_if_error: true

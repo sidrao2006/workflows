@@ -34,8 +34,8 @@ jobs:
 
       - name: Run unit tests
         run: flutter test --coverage
-      
-      - name: Codecov
+
+      - name: Codecov Test Coverage
         if: ${{ inputs.coverage }}
         uses: codecov/codecov-action@v3.1.0
         with:
