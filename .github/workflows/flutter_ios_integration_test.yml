@@ -33,7 +33,7 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          channel: stable # Temporarily use stable channel for iOS
+          channel: beta
 
       - name: Run tests on simulator
         run: |
