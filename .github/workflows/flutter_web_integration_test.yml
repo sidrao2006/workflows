@@ -46,4 +46,4 @@ jobs:
             --release ${{ secrets.args }}
 
       - name: Print Chrome browser logs
-        run: Get-Content chrome_logs.log
+        run: cat chrome_logs.log
