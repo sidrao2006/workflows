@@ -20,12 +20,11 @@ jobs:
   web_integration_test:
     name: Web Integration Test
     environment: ${{ inputs.environment }}
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: ${{ inputs.dir }}
-        shell: pwsh
 
     steps:
       - name: Checkout repository code
@@ -38,13 +37,13 @@ jobs:
 
       - name: Run integration tests on Chrome
         run: |
-          (chromedriver --port=4444 --enable-chrome-logs --log-path=chrome_logs.log &) >$null
+          chromedriver --port=4444 --enable-chrome-logs --log-path=chrome_logs.log &
 
-          flutter driver --driver test_driver/integration_test.dart `
-            --target ./integration_test/${{ inputs.test_filename }} `
-            --device-id web-server `
-            --browser-name chrome `
+          flutter driver --driver test_driver/integration_test.dart \
+            --target ./integration_test/${{ inputs.test_filename }} \
+            --device-id web-server \
+            --browser-name chrome \
             --release ${{ secrets.args }}
 
       - name: Print Chrome browser logs
-        run: Get-Content chrome_logs.log
+        run: cat chrome_logs.log
