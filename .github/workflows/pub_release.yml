@@ -51,7 +51,7 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v23
+        uses: tj-actions/changed-files@v32
 
       - name: Check that necessary files have been modified
         env:
