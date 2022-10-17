@@ -46,7 +46,7 @@ jobs:
             });
 
       - name: Get commits
-        uses: octokit/request-action@v2.1.4
+        uses: octokit/request-action@v2.1.7
         id: get_commits
         with:
           route: GET /repos/{owner}/{repo}/pulls/{pull_number}/commits
