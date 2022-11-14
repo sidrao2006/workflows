@@ -67,7 +67,7 @@ jobs:
           service_account: ${{ inputs.service_account }}
 
       - name: Set up Google Cloud SDK for Firebase
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@v1
 
       - name: Upload APKs to Firebase Test Lab
         run: |
