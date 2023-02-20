@@ -55,7 +55,7 @@ jobs:
 
       - name: Wait on tests
         if: ${{ inputs.wait_on_tests }}
-        uses: lewagon/wait-on-check-action@v1.1.1
+        uses: lewagon/wait-on-check-action@v1.3.1
         with:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
