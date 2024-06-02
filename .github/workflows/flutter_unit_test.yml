@@ -42,4 +42,3 @@ jobs:
           token: ${{ secrets.codecov_token }}
           file: ${{ inputs.dir }}/coverage/lcov.info
           flags: unit
-          fail_ci_if_error: true
