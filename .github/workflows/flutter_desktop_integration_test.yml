@@ -90,4 +90,3 @@ jobs:
           token: ${{ secrets.codecov_token }}
           file: ${{ inputs.dir }}/coverage/lcov.info
           flags: integration
-          fail_ci_if_error: true
