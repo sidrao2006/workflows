@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Update floating tag
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const sha = '${{ github.sha }}'
