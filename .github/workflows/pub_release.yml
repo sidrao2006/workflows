@@ -87,6 +87,6 @@ jobs:
       - name: Publish package to pub.dev
         if: success()
         timeout-minutes: 30
-        uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1.6.4
-        with:
-          environment: ${{ inputs.environment }}
+        run: |
+          dart pub get
+          dart pub publish
