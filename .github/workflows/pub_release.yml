@@ -82,7 +82,7 @@ jobs:
         uses: subosito/flutter-action@v2
 
       - name: Run pre publish command
-        run: flutter format .
+        run: dart format .
 
       - name: Publish package to pub.dev
         if: success()
