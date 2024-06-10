@@ -70,7 +70,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
           running-workflow-name: '${{ inputs.job_name }} / Release and Publish Package'
-          allowed-conclusions: success,skipped
+          allowed-conclusions: success,skipped,cancelled
 
       - name: Release package (Github)
         if: success()
