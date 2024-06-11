@@ -4,10 +4,9 @@
 #   group: Release to Pub
 #   cancel-in-progress: true
 #
-# - Enable 'write' permission for 'contents' and 'id-token'
+# - Enable 'write' permission for 'contents'
 # permissions:
 #   contents: write
-#   id-token: write
 #
 # Additional setup: The changelog for Github Release is generated from the CHANGELOG.md file.
 # To add more details, refer to https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#configuring-automatically-generated-release-notes
@@ -26,6 +25,17 @@ on:
       job_name:
         required: false
         type: string
+    secrets:
+      PUB_CREDENTIALS_ACCESS_TOKEN:
+        required: true
+      PUB_CREDENTIALS_REFRESH_TOKEN:
+        required: true
+      PUB_CREDENTIALS_ID_TOKEN:
+        required: true
+      PUB_CREDENTIALS_TOKEN_ENDPOINT:
+        required: true
+      PUB_CREDENTIALS_EXPIRATION:
+        required: true
 
 jobs:
   release:
@@ -72,21 +82,16 @@ jobs:
           running-workflow-name: '${{ inputs.job_name }} / Release and Publish Package'
           allowed-conclusions: success,skipped,cancelled
 
-      - name: Release package (Github)
-        if: success()
-        uses: sidrao2006/release-pub-package@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-
-      - name: Run pre publish command
-        run: dart format .
-
-      - name: Publish package to pub.dev
+      - name: Release package
         if: success()
         timeout-minutes: 30
-        run: |
-          dart pub get
-          dart pub publish -f
+        uses: sidrao2006/release-pub-package@main
+        with:
+          pre-publish-command: flutter format .
+          access-token: ${{ secrets.PUB_CREDENTIALS_ACCESS_TOKEN }}
+          refresh-token: ${{ secrets.PUB_CREDENTIALS_REFRESH_TOKEN }}
+          id-token: ${{ secrets.PUB_CREDENTIALS_ID_TOKEN }}
+          token-endpoint: ${{ secrets.PUB_CREDENTIALS_TOKEN_ENDPOINT }}
+          expiration: ${{ secrets.PUB_CREDENTIALS_EXPIRATION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
