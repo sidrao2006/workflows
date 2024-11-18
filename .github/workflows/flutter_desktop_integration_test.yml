@@ -85,7 +85,7 @@ jobs:
 
       - name: Codecov Test Coverage
         if: ${{ inputs.coverage && matrix.flutter_os == 'linux' }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.codecov_token }}
           file: ${{ inputs.dir }}/coverage/lcov.info
